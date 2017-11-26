@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- 8.9.1
+before_script:
+- npm run build
+deploy:
+  email: vladimirmorulus@gamil.com
+  provider: npm
+  skip_cleanup: true
+  before_script: npm run prepublish
+  on:
+    tags: true
