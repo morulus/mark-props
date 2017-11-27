@@ -1,8 +1,8 @@
-const MARKING = Symbol('formation');
+const MARKING = Symbol('MARKING');
 
 function objectOrFunction(target) {
   const typeOf = typeof target;
-  return (
+  return target !== null && (
     typeOf === 'function'
     || typeOf === 'object'
   );
@@ -51,7 +51,6 @@ function markProps(object, initialFormation) {
   }
 
   let marking;
-
   const proxiedObject = new Proxy(object, {
     get(target, name) {
       const origin = target[name];
