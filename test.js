@@ -1,7 +1,7 @@
 import OriginPropTypes from 'prop-types';
 import markProps, { getMarking } from './src';
 
-describe('markProps with PropTypes', () => {
+describe('mark-props with PropTypes', () => {
   const PropTypes = markProps(OriginPropTypes);
   it('PropTypes.node', () => {
     const node = PropTypes.node;
@@ -63,7 +63,7 @@ describe('markProps with PropTypes', () => {
   });
 });
 
-describe('prop-marker with PropTypes', () => {
+describe('mark-props with PropTypes', () => {
   it('Various object', () => {
     const SomeShape = markProps({
       a: {
@@ -76,6 +76,54 @@ describe('prop-marker with PropTypes', () => {
     });
     const c = SomeShape.a.b.c('C');
     expect(getMarking(c)).toMatchObject([
+      {
+        name: 'a',
+        type: 'object',
+      },
+      {
+        name: 'b',
+        type: 'object',
+      },
+      {
+        name: 'c',
+        type: 'function',
+        args: ['C'],
+      },
+    ]);
+  });
+});
+
+describe('mark-props with custom marker', () => {
+  it('default', () => {
+    const CUSTOM_MARKING = Symbol('test');
+    const SomeShape = markProps({
+      a: {
+        b: {
+          c: () => ({
+            d: 1,
+          }),
+        },
+      },
+    }, [], CUSTOM_MARKING);
+    const c = SomeShape.a.b.c('C');
+
+    expect(getMarking(c)).not.toMatchObject([
+      {
+        name: 'a',
+        type: 'object',
+      },
+      {
+        name: 'b',
+        type: 'object',
+      },
+      {
+        name: 'c',
+        type: 'function',
+        args: ['C'],
+      },
+    ]);
+
+    expect(getMarking(c, CUSTOM_MARKING)).toMatchObject([
       {
         name: 'a',
         type: 'object',

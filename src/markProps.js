@@ -1,4 +1,6 @@
-const MARKING = Symbol('MARKING');
+// I can not use Symbol as marking key, because there is cases when `mark-props`,
+// which hooks and reads are different modules.
+const MARKING = '[[mark-props:v0.1.3:2UgY2FuIG9ubHkgc2hvdyB5b3UgdGhlIGRvb3IsIHlvdSdyZSB0aGUgb25lIHdobyBoYXZlIHRvIHdhbGsgdGhyb3VnaCBpdA==]]';
 
 function objectOrFunction(target) {
   const typeOf = typeof target;
@@ -21,7 +23,9 @@ function getLastFormation(formations) {
 }
 
 function extend(prevFormation, nextFormation) {
-  if (!prevFormation) {
+  if (!prevFormation || (
+    isArray(prevFormation) && !prevFormation.length
+  )) {
     return toArray(nextFormation);
   }
   const validPrevFormation = toArray(prevFormation);
@@ -39,11 +43,11 @@ function extend(prevFormation, nextFormation) {
   return validPrevFormation.concat(nextFormation);
 }
 
-function getMarking(object) {
-  return object[MARKING] || [];
+function getMarking(object, marking = MARKING) {
+  return object[marking] || [];
 }
 
-function markProps(object, initialFormation) {
+function markProps(object, initialFormation, markingKey = MARKING) {
   const cache = {};
 
   if (!objectOrFunction(object)) {
@@ -55,7 +59,7 @@ function markProps(object, initialFormation) {
     get(target, name) {
       const origin = target[name];
 
-      if (name === MARKING) {
+      if (name === markingKey) {
         return marking;
       }
 
@@ -64,14 +68,14 @@ function markProps(object, initialFormation) {
           cache[name] = markProps(origin, extend(initialFormation, {
             name,
             type: typeof origin,
-          }));
+          }), markingKey);
         }
         return cache[name];
       }
       return origin;
     },
     set(target, name, value) {
-      if (name === MARKING) {
+      if (name === markingKey) {
         return false;
       }
       target[name] = value;
@@ -85,7 +89,7 @@ function markProps(object, initialFormation) {
         return markProps(result, extend(initialFormation, {
           args,
           resultType: typeof result,
-        }));
+        }), markingKey);
       }
       return result;
     },
