@@ -140,3 +140,67 @@ describe('mark-props with custom marker', () => {
     ]);
   });
 });
+
+describe('coverage', () => {
+  it('set', () => {
+    const SomeShape = markProps({
+      a: {
+        b: {
+          c: () => ({
+            d: 1,
+          }),
+        },
+      },
+    }, []);
+
+    SomeShape.a.x = 13;
+    expect(SomeShape.a.x).toBe(13);
+
+    SomeShape.a.x = () => {};
+    expect(typeof SomeShape.a.x).toBe('function');
+
+    const x = SomeShape.a.x;
+    expect(getMarking(x)).toMatchObject([
+      {
+        name: 'a',
+        type: 'object',
+      },
+      {
+        name: 'x',
+        type: 'function',
+      },
+    ]);
+  });
+
+  it('fail on set marking key', () => {
+    const CUSTOM_MARKING = Symbol('test');
+    const SomeShape = markProps({
+      a: {},
+    }, [], CUSTOM_MARKING);
+
+    function throwable() {
+      SomeShape[CUSTOM_MARKING] = false;
+    }
+
+    expect(throwable).toThrow();
+  });
+
+  it('pass false object', () => {
+    function throwable1() {
+      markProps(null);
+    }
+    function throwable2() {
+      markProps();
+    }
+    expect(throwable1).toThrow();
+    expect(throwable2).toThrow();
+  });
+
+  it('return non-object result', () => {
+    const SomeShape = markProps({
+      a: () => 'mark-props',
+    }, []);
+
+    expect(SomeShape.a()).toBe('mark-props');
+  });
+});
