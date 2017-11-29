@@ -79,6 +79,7 @@ function markProps(object, initialFormation, markingKey = MARKING) {
         return false;
       }
       target[name] = value;
+      delete cache[name];
 
       return true;
     },
