@@ -1,7 +1,7 @@
 {
   "name": "mark-props",
-  "version": "1.0.0-beta",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Tool for memorizing paths of objects destructuring",
   "main": "lib/index.js",
   "scripts": {
     "test": "./node_modules/.bin/eslint src && ./node_modules/.bin/jest test.js",
