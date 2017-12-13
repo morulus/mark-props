@@ -1,15 +1,19 @@
 {
   "name": "mark-props",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Tool for memorizing paths of objects destructuring",
   "main": "lib/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/eslint src && ./node_modules/.bin/jest test.js",
+    "test": "eslint src && ./node_modules/.bin/jest test.js",
     "build": "babel src -d lib",
     "prepublish": "npm run clean && npm test && npm run build",
     "clean": "rimraf es lib"
   },
-  "keywords": ["proxy", "mark", "object"],
+  "keywords": [
+    "proxy",
+    "mark",
+    "object"
+  ],
   "author": "Vladimir Kalmykov <vladimirmorulus@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -31,5 +35,16 @@
     "prop-types": "^15.6.0",
     "rimraf": "^2.6.1"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morulus/mark-props.git"
+  },
+  "bugs": {
+    "url": "https://github.com/morulus/mark-props/issues"
+  },
+  "homepage": "https://github.com/morulus/mark-props#readme"
 }
