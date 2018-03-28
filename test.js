@@ -1,8 +1,9 @@
 import OriginPropTypes from 'prop-types';
 import markProps, { getMarking } from './src';
 
+const PropTypes = markProps(OriginPropTypes);
+
 describe('mark-props with PropTypes', () => {
-  const PropTypes = markProps(OriginPropTypes);
   it('PropTypes.node', () => {
     const node = PropTypes.node;
     expect(getMarking(node)).toMatchObject([{ name: 'node' }]);
@@ -88,6 +89,38 @@ describe('mark-props with PropTypes', () => {
         name: 'c',
         type: 'function',
         args: ['C'],
+      },
+    ]);
+  });
+});
+
+describe('mark-props with PropTypes.oneOfType', () => {
+  it('Array of children types', () => {
+    const propType = PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func,
+    ]);
+    const marking = getMarking(propType);
+    expect(marking.length).toBe(1);
+    expect(marking[0]).toMatchObject({
+      name: 'oneOfType',
+      type: 'function',
+    });
+    expect(typeof marking[0].args[0][0]).toBe('function');
+
+    const childMarking1 = getMarking(marking[0].args[0][0]);
+    expect(childMarking1).toMatchObject([
+      {
+        name: 'string',
+        type: 'function',
+      },
+    ]);
+
+    const childMarking2 = getMarking(marking[0].args[0][1]);
+    expect(childMarking2).toMatchObject([
+      {
+        name: 'func',
+        type: 'function',
       },
     ]);
   });
